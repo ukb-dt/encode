@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ENCODE Pentad: Entropy → Aeschylean Writing</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&family=Inter:wght@300;400;500;600;700&display=swap');
+  
+  :root {
+    --void: #000511;
+    --deep: #0a0f1c;
+    --bg: #0e1424;
+    --surface: #162236;
+    --border: #243548;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --accent: #38bdf8;
+    --entropy: #ef4444;
+    --negentropy: #10b981;
+    --collision: #f59e0b;
+    --observe: #8b5cf6;
+    --decode: #ec4899;
+    --glow: rgba(56, 189, 248, 0.2);
+    --pulse: rgba(239, 68, 68, 0.3);
+  }
+
+  * { box-sizing: border-box; }
+  
+  body {
+    margin: 0;
+    background: radial-gradient(ellipse at center, var(--deep) 0%, var(--void) 100%);
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  /* Animated background particles */
+  .particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 50%;
+    opacity: 0.3;
+    animation: float 8s infinite linear;
+  }
+
+  @keyframes float {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.3; }
+    90% { opacity: 0.3; }
+    100% { transform: translateY(-10px) rotate(360deg); opacity: 0; }
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 60px;
+    position: relative;
+  }
+
+  .title {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--decode), var(--collision));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 0;
+    letter-spacing: -0.02em;
+    animation: titleGlow 3s ease-in-out infinite alternate;
+  }
+
+  @keyframes titleGlow {
+    0% { filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.3)); }
+    100% { filter: drop-shadow(0 0 40px rgba(236, 72, 153, 0.4)); }
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+    color: var(--muted);
+    margin: 20px 0 0 0;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Main pentad container */
+  .pentad-container {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto 80px;
+    aspect-ratio: 1;
+  }
+
+  .pentad {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Central glow effect */
+  .central-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300px;
+    height: 300px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: centralPulse 4s ease-in-out infinite;
+  }
+
+  @keyframes centralPulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.3; }
+    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.6; }
+  }
+
+  /* Connection lines with animated flow */
+  .connection {
+    position: absolute;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    transform-origin: left center;
+    opacity: 0.6;
+    overflow: hidden;
+  }
+
+  .connection::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+    animation: flowPulse 3s linear infinite;
+  }
+
+  @keyframes flowPulse {
+    0% { left: -100%; }
+    100% { left: 100%; }
+  }
+
+  /* Node positioning (pentagon vertices) */
+  .node {
+    position: absolute;
+    width: 200px;
+    min-height: 120px;
+    transform: translate(-50%, -50%);
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    box-shadow: 
+      0 20px 60px rgba(0,0,0,0.4),
+      inset 0 1px 0 rgba(255,255,255,0.1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+  }
+
+  .node:hover {
+    transform: translate(-50%, -50%) scale(1.05);
+    box-shadow: 
+      0 30px 80px rgba(0,0,0,0.6),
+      0 0 40px var(--glow),
+      inset 0 1px 0 rgba(255,255,255,0.2);
+    border-color: var(--accent);
+  }
+
+  /* Individual node colors and positions */
+  .entropy {
+    top: 15%;
+    left: 50%;
+    border-color: var(--entropy);
+    background: linear-gradient(135deg, var(--surface), rgba(239, 68, 68, 0.1));
+  }
+
+  .negentropy {
+    top: 35%;
+    right: 8%;
+    border-color: var(--negentropy);
+    background: linear-gradient(135deg, var(--surface), rgba(16, 185, 129, 0.1));
+  }
+
+  .collision {
+    bottom: 25%;
+    right: 25%;
+    border-color: var(--collision);
+    background: linear-gradient(135deg, var(--surface), rgba(245, 158, 11, 0.1));
+  }
+
+  .observe {
+    bottom: 25%;
+    left: 25%;
+    border-color: var(--observe);
+    background: linear-gradient(135deg, var(--surface), rgba(139, 92, 246, 0.1));
+  }
+
+  .decode {
+    top: 35%;
+    left: 8%;
+    border-color: var(--decode);
+    background: linear-gradient(135deg, var(--surface), rgba(236, 72, 153, 0.1));
+  }
+
+  .node-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  .entropy .node-label { color: var(--entropy); }
+  .negentropy .node-label { color: var(--negentropy); }
+  .collision .node-label { color: var(--collision); }
+  .observe .node-label { color: var(--observe); }
+  .decode .node-label { color: var(--decode); }
+
+  .node-desc {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  .node-symbol {
+    font-size: 1.4rem;
+    font-weight: 300;
+    margin-bottom: 8px;
+    display: block;
+    opacity: 0.8;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Matrix section */
+  .matrix-section {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 40px;
+    margin: 60px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .matrix-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.05), transparent);
+    animation: shimmer 8s linear infinite;
+  }
+
+  @keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+  }
+
+  .matrix-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin: 0 0 30px 0;
+    text-align: center;
+    color: var(--accent);
+  }
+
+  .sigma-matrix {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--surface);
+  }
+
+  .sigma-matrix th,
+  .sigma-matrix td {
+    padding: 16px 12px;
+    text-align: center;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    transition: all 0.3s ease;
+  }
+
+  .sigma-matrix th {
+    background: var(--bg);
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .sigma-matrix td {
+    cursor: pointer;
+  }
+
+  .sigma-matrix td:hover {
+    background: var(--glow);
+    color: white;
+    transform: scale(1.05);
+    z-index: 10;
+  }
+
+  .diagonal {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
+    color: var(--negentropy);
+    font-weight: 600;
+  }
+
+  .off-diagonal {
+    background: rgba(56, 189, 248, 0.1);
+    color: var(--accent);
+  }
+
+  /* Info panel */
+  .info-panel {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 60px;
+  }
+
+  .info-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    transition: all 0.3s ease;
+  }
+
+  .info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    border-color: var(--accent);
+  }
+
+  .info-card h3 {
+    margin: 0 0 16px 0;
+    color: var(--accent);
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+
+  .info-card p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .container {
+      padding: 20px 15px;
+    }
+    
+    .node {
+      width: 160px;
+      min-height: 100px;
+      padding: 15px;
+    }
+    
+    .pentad-container {
+      max-width: 600px;
+    }
+    
+    .matrix-section {
+      padding: 20px;
+    }
+    
+    .sigma-matrix th,
+    .sigma-matrix td {
+      padding: 12px 8px;
+      font-size: 0.9rem;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="particles" id="particles"></div>
+  
+  <div class="container">
+    <header class="header">
+      <h1 class="title">ENCODE</h1>
+      <p class="subtitle">Entropy → Negentropy → Collision → Observe → Decode</p>
+    </header>
+
+    <div class="pentad-container">
+      <div class="pentad">
+        <div class="central-glow"></div>
+        
+        <div class="node entropy">
+          <span class="node-symbol">θ</span>
+          <div class="node-label">E • ENTROPY</div>
+          <p class="node-desc">Parameters of conflict<br>Adversarial baseline<br>Thermodynamic drift</p>
+        </div>
+
+        <div class="node negentropy">
+          <span class="node-symbol">Σ</span>
+          <div class="node-label">N • NEGENTROPY</div>
+          <p class="node-desc">Structure emerges<br>Cooperation within<br>Order against chaos</p>
+        </div>
+
+        <div class="node collision">
+          <span class="node-symbol">h(t)</span>
+          <div class="node-label">C • COLLISION</div>
+          <p class="node-desc">Okukona moments<br>Play meets resistance<br>Synchronicity stress</p>
+        </div>
+
+        <div class="node observe">
+          <span class="node-symbol">ΔS</span>
+          <div class="node-label">O • OBSERVE</div>
+          <p class="node-desc">Ledger of survival<br>Measurement creates<br>Scars and gaps</p>
+        </div>
+
+        <div class="node decode">
+          <span class="node-symbol">θ′</span>
+          <div class="node-label">D • DECODE</div>
+          <p class="node-desc">Nietzschean update<br>Aeschylean writing<br>Meaning from trauma</p>
+        </div>
+      </div>
+    </div>
+
+    <section class="matrix-section">
+      <h2 class="matrix-title">Σ Matrix: The Negentropy Structure</h2>
+      
+      <table class="sigma-matrix">
+        <thead>
+          <tr>
+            <th></th>
+            <th>A</th>
+            <th>B</th>
+            <th>C</th>
+            <th>D</th>
+            <th>E</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>A</th>
+            <td class="diagonal">σ<sub>AA</sub></td>
+            <td class="off-diagonal">σ<sub>AB</sub></td>
+            <td class="off-diagonal">σ<sub>AC</sub></td>
+            <td class="off-diagonal">σ<sub>AD</sub></td>
+            <td class="off-diagonal">σ<sub>AE</sub></td>
+          </tr>
+          <tr>
+            <th>B</th>
+            <td class="off-diagonal">σ<sub>BA</sub></td>
+            <td class="diagonal">σ<sub>BB</sub></td>
+            <td class="off-diagonal">σ<sub>BC</sub></td>
+            <td class="off-diagonal">σ<sub>BD</sub></td>
+            <td class="off-diagonal">σ<sub>BE</sub></td>
+          </tr>
+          <tr>
+            <th>C</th>
+            <td class="off-diagonal">σ<sub>CA</sub></td>
+            <td class="off-diagonal">σ<sub>CB</sub></td>
+            <td class="diagonal">σ<sub>CC</sub></td>
+            <td class="off-diagonal">σ<sub>CD</sub></td>
+            <td class="off-diagonal">σ<sub>CE</sub></td>
+          </tr>
+          <tr>
+            <th>D</th>
+            <td class="off-diagonal">σ<sub>DA</sub></td>
+            <td class="off-diagonal">σ<sub>DB</sub></td>
+            <td class="off-diagonal">σ<sub>DC</sub></td>
+            <td class="diagonal">σ<sub>DD</sub></td>
+            <td class="off-diagonal">σ<sub>DE</sub></td>
+          </tr>
+          <tr>
+            <th>E</th>
+            <td class="off-diagonal">σ<sub>EA</sub></td>
+            <td class="off-diagonal">σ<sub>EB</sub></td>
+            <td class="off-diagonal">σ<sub>EC</sub></td>
+            <td class="off-diagonal">σ<sub>ED</sub></td>
+            <td class="diagonal">σ<sub>EE</sub></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <div class="info-panel">
+      <div class="info-card">
+        <h3>Diagonal = Cooperation Within</h3>
+        <p>Variance terms (σ<sub>AA</sub>, σ<sub>BB</sub>...) represent ordered signal-transduction within agents. This is negentropy—the improbable maintenance of structure against thermodynamic decay. Schrödinger's insight about life feeding on order.</p>
+      </div>
+      
+      <div class="info-card">
+        <h3>Off-diagonal = Transaction Between</h3>
+        <p>Covariance terms (σ<sub>AB</sub>, σ<sub>AC</sub>...) capture synchronies that emerge at interfaces between agents. These are the collision points where individual negentropic structures interact and create new patterns.</p>
+      </div>
+      
+      <div class="info-card">
+        <h3>The ENCODE Cycle</h3>
+        <p>From entropic baseline through negentropic structure formation, collision stresses, observational recording, to deductive updates. Each cycle writes new parameters that feed back into the next iteration of the eternal return.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Create animated background particles
+    function createParticles() {
+      const container = document.getElementById('particles');
+      const numParticles = 50;
+      
+      for (let i = 0; i < numParticles; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 8 + 's';
+        particle.style.animationDuration = (8 + Math.random() * 4) + 's';
+        container.appendChild(particle);
+      }
+    }
+
+    // Add interactive hover effects for matrix cells
+    document.addEventListener('DOMContentLoaded', function() {
+      createParticles();
+      
+      const matrixCells = document.querySelectorAll('.sigma-matrix td');
+      matrixCells.forEach(cell => {
+        cell.addEventListener('mouseenter', function() {
+          this.style.transform = 'scale(1.1)';
+          this.style.zIndex = '10';
+        });
+        
+        cell.addEventListener('mouseleave', function() {
+          this.style.transform = 'scale(1)';
+          this.style.zIndex = '1';
+        });
+      });
+
+      // Add subtle parallax effect to nodes
+      const nodes = document.querySelectorAll('.node');
+      document.addEventListener('mousemove', function(e) {
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+        const moveX = (e.clientX - centerX) * 0.01;
+        const moveY = (e.clientY - centerY) * 0.01;
+        
+        nodes.forEach((node, index) => {
+          const intensity = (index + 1) * 0.3;
+          node.style.transform = `translate(-50%, -50%) translate(${moveX * intensity}px, ${moveY * intensity}px)`;
+        });
+      });
+    });
+  </script>
+</body>
+</html>
